@@ -3,8 +3,14 @@ let inputFloorsBlock = findInputFloorsBlock();
 let houseField = findHouseField();
 let houseBlock = findHouseBlock();
 let controlBlock = findControlBlock()
+let inputStartFloorNumber = findinputStartFloorNumber();
+let inputFinishFloorNumber = findinputFinishFloorNumber();
+
 let numberOfFloors = 0;
-bindListenerToInputFloors();
+
+bindListenerToInputFloors(inputFloors);
+bindListenerToStartFloorNumber(inputStartFloorNumber);
+bindListenerToFinishFloorNumber(inputFinishFloorNumber);
 
 
 function findControlBlock() {
@@ -27,13 +33,37 @@ function findInputFloors() {
     return document.getElementById('inputFloors');
 }
 
-function bindListenerToInputFloors() {
+function findinputStartFloorNumber() {
+    return document.getElementById('inputStartFloorNumber');
+}
+
+function findinputFinishFloorNumber() {
+    return document.getElementById('inputFinishFloorNumber');
+}
+
+
+
+function bindListenerToInputFloors(inputFloors) {
     inputFloors.addEventListener('keydown', getFloors);
 }
 
-function getFloors(e) {
-    if (e.code == 'Enter') {
+function bindListenerToStartFloorNumber(inputStartFloorNumber) {
+    inputStartFloorNumber.addEventListener('keydown', getNumberFloor);
+}
+
+function bindListenerToFinishFloorNumber(inputFinishFloorNumber) {
+    inputFinishFloorNumber.addEventListener('keydown', getNumberFloor);
+}
+
+
+function getNumberFloor(e) {
+    if (e.code == 'Enter' || e.code == "NumpadEnter") {
         click();
+    }
+}
+
+function getFloors(e) {
+    if (e.code == 'Enter' || e.code == "NumpadEnter") {
         let inputValue = getNumberOfFloors(inputFloors);
         let check = checkNumberOfFloors(inputValue);
 

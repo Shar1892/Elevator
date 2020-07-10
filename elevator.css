@@ -8,6 +8,10 @@
     text-align: center;
 }
 
+#inputFloors {
+    width: 44px;
+}
+
 .houseField {
     display: none;
     justify-content: center;
@@ -63,7 +67,25 @@
     display: none;
     margin-top: 150px;
     margin-left: 50px;
+    padding-left: 30px;
+    padding-top: 30px;
     width: 400px;
     height: 300px;
     border: 2px solid black;
+}
+
+#inputStartFloorNumber {
+    margin: 10px;
+    width: 42px;
+}
+
+#inputFinishFloorNumber {
+    margin-left: 15px;
+    width: 42px;
+}
+
+.startButton {
+    width: 50px;
+    margin-top: 20px;
+    margin-left: 159px;
 }
