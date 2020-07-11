@@ -130,20 +130,6 @@ function checkInputValue(inputValue, numberOfFloors) {
     }
 }
 
-function checkNumberOfFloors(inputValue) {
-    if (isFinite(inputValue) && inputValue) {
-        if (inputValue < 3) {
-            alertMessageNotValidValue(1, 3, 9);
-        } else if (inputValue > 9) {
-            alertMessageNotValidValue(2, 3, 9);
-        } else {
-            return true;
-        }
-    } else {
-        alertMessageNotValidValue(3, 3, 9);
-    }
-}
-
 function alertMessageNotValidValue(option, min, max) {
     let phrase = (option == 1) ? 'Мало этажей для лифта.':
         (option == 2) ? 'Слишком высокий дом.':
