@@ -2,9 +2,10 @@ let inputFloors = findInputFloors();
 let inputFloorsBlock = findInputFloorsBlock();
 let houseField = findHouseField();
 let houseBlock = findHouseBlock();
-let controlBlock = findControlBlock()
+let controlBlock = findControlBlock();
 let inputStartFloorNumber = findinputStartFloorNumber();
 let inputFinishFloorNumber = findinputFinishFloorNumber();
+let startButton = findStartButton();
 
 let numberOfFloors = 0;
 
@@ -41,6 +42,10 @@ function findinputFinishFloorNumber() {
     return document.getElementById('inputFinishFloorNumber');
 }
 
+function findStartButton() {
+    return document.querySelectorAll('.startButton');
+}
+
 
 
 function bindListenerToInputFloors(inputFloors) {
@@ -56,30 +61,11 @@ function bindListenerToFinishFloorNumber(inputFinishFloorNumber) {
 }
 
 
-function getNumberStartFloor(e) {
-    if (e.code == 'Enter' || e.code == "NumpadEnter") {
-        let inputValue = getValueOfInput(inputStartFloorNumber);
-        let check = checkInputValue(inputValue, numberOfFloors);
-        if (check) {
-            console.log(inputValue);
-        }
-    }
-}
-
-function getNumberFinishFloor(e) {
-    if (e.code == 'Enter' || e.code == "NumpadEnter") {
-        let inputValue = getValueOfInput(inputFinishFloorNumber);
-        let check = checkInputValue(inputValue, numberOfFloors);
-        if (check) {
-            console.log(inputValue);
-        }
-    }
-}
 
 function getFloors(e) {
     if (e.code == 'Enter' || e.code == "NumpadEnter") {
         let inputValue = getValueOfInput(inputFloors);
-        let check = checkInputValue (inputValue);
+        let check = checkInputValue(inputFloors, inputValue);
         
         if(check) {
             inputFloorsBlock.style.display = "none";
@@ -105,29 +91,57 @@ function buildFloors(houseBlock) {
     houseBlock.append(div);
 }
 
-function checkInputValue(inputValue, numberOfFloors) {
+function startMovingElevator() {
+    let startNumber = getFloor(inputStartFloorNumber, numberOfFloors);
+    let finishNumber = getFloor(inputFinishFloorNumber, numberOfFloors);
+    if (startNumber && finishNumber) {
+        console.log('OK');
+    }
+}
+
+function getFloor(input, numberOfFloors) {
+    let floorNumber = getValueOfInput(input);
+    let check = checkInputValue(input, floorNumber, numberOfFloors);
+    if (check) {
+        return floorNumber;
+    } else {
+        return false;
+    }
+}
+
+function checkInputValue(input, inputValue, numberOfFloors) {
     let minFloor = (numberOfFloors) ? 1 : 3;
     let maxFloor = (numberOfFloors) ? +numberOfFloors : 9;
 
     if (isFinite(inputValue) && inputValue) {
         if (numberOfFloors) {
             if (inputValue < minFloor || inputValue > maxFloor) {
+                paintField(input, 1);
                 alertMessageNotValidValue (4, minFloor, maxFloor);
             } else {
+                paintField(input);
                 return true;
             }
         } else {
             if (inputValue < minFloor) {
+                paintField(input, 1);
                 alertMessageNotValidValue(1, minFloor, maxFloor);
             } else if (inputValue > maxFloor) {
+                paintField(input, 1);
                 alertMessageNotValidValue(2, minFloor, maxFloor);
             } else {
+                paintField(input);
                 return true;
             }
         }
     } else {
+        paintField(input, 1);
         alertMessageNotValidValue(3, minFloor, maxFloor);
     }
+}
+
+function paintField(field, option) {
+    field.style.background = (option == 1) ? "#FF5050": "#FFFFFF";
 }
 
 function alertMessageNotValidValue(option, min, max) {
