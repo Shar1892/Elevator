@@ -4,20 +4,33 @@ let inputFloorsBlock = findInputFloorsBlock();
 let houseField = findHouseField();
 let houseBlock = findHouseBlock();
 let controlBlock = findControlBlock();
-let inputStartFloorNumber = findinputStartFloorNumber();
-let inputFinishFloorNumber = findinputFinishFloorNumber();
+let inputStartFloorNumber = findInputStartFloorNumber();
+let inputFinishFloorNumber = findInputFinishFloorNumber();
 let startButton = findStartButton();
+let elevator = findElevatorElem();
+let elevatorBlock = findElevatorBlock();
+let indicator = findIndicatorElem();
 
 //переменная в которой храним число этажей
 let numberOfFloors = 0;
 
 //привязываем прослушивание событий на элементы
 bindListenerToInputFloors(inputFloors);
-bindListenerToStartFloorNumber(inputStartFloorNumber);
-bindListenerToFinishFloorNumber(inputFinishFloorNumber);
 
 
 //функции для определения элементов
+function findIndicatorElem() {
+    return document.querySelector('.elevatorIndicator');
+}
+
+function findElevatorBlock() {
+    return document.querySelector('.elevatorBlock');
+}
+
+function findElevatorElem() {
+    return document.querySelector('.elevator');
+}
+
 function findControlBlock() {
     return document.querySelector('.controlBlock');
 }
@@ -38,11 +51,11 @@ function findInputFloors() {
     return document.getElementById('inputFloors');
 }
 
-function findinputStartFloorNumber() {
+function findInputStartFloorNumber() {
     return document.getElementById('inputStartFloorNumber');
 }
 
-function findinputFinishFloorNumber() {
+function findInputFinishFloorNumber() {
     return document.getElementById('inputFinishFloorNumber');
 }
 
@@ -98,14 +111,88 @@ function buildFloors(houseBlock) {
     houseBlock.append(div);
 }
 
+
 //начало движения лифта
 function startMovingElevator() {
     //получение этажа старта и финиша
-    let startNumber = getFloor(inputStartFloorNumber, numberOfFloors);
-    let finishNumber = getFloor(inputFinishFloorNumber, numberOfFloors);
-    if (startNumber && finishNumber) {
-        console.log('OK');
+    let startFloorNumber = getFloor(inputStartFloorNumber, numberOfFloors);
+    let finishFloorNumber = getFloor(inputFinishFloorNumber, numberOfFloors);
+    //если оба значения валидны, запускаю движение лифта
+    if (startFloorNumber && finishFloorNumber) {
+        movingElevator(startFloorNumber, finishFloorNumber);
     }
+}
+
+//двигаем лифт
+function movingElevator(startFloor, finishFloor) {
+    //определяю точки старта, стартового и финишного этажей и задержку
+    let startElevatorPointPosition = findElevatorIndent(elevatorBlock, elevator);
+    let startFloorPointPosition = getFloorPointPosition(startFloor);
+    let finishFloorPointPosition = getFloorPointPosition(finishFloor);
+    let delay = 0;
+
+    //через полсекунды лифт двигается
+    setTimeout(changeElevatorPosition, 500, startFloorPointPosition);
+    //определяю задержку, секунда на 2 стоянки и время на движение
+    delay = 1000 + findDelay(startElevatorPointPosition, startFloorPointPosition);
+    //крашу индикатор в занято с полученной задержкой
+    setTimeout(changeIndicator, delay, 1);
+    //увеличиваю задержку на время стоянки
+    delay += 500;
+    //запускаю лифт обратно с обновленной задержкой
+    setTimeout(changeElevatorPosition, delay, finishFloorPointPosition);
+    //увеличиваю задержку на стоянку и время второго движения
+    delay += 500 + findDelay(startFloorPointPosition, finishFloorPointPosition);
+    //крашу индикатор в свободно с обновлённой задержкой
+    setTimeout(changeIndicator, delay);
+}
+
+//нахожу время, за которое лифт проходит от начальной точки до конечной
+function findDelay(startPoint, finishPoint) {
+    return Math.abs(finishPoint - startPoint) * 32;
+}
+
+//меняю цвет индикатора
+function changeIndicator(option) {
+    indicator.style.backgroundColor = (option) ? "red" : "green";
+}
+
+//меняем координаты лифта
+function changeElevatorPosition(finishFloorPoint) {
+    //определяю отступ лифта
+    let elevatorIndent = findElevatorIndent(elevatorBlock, elevator);
+    //если отступ не совпадает с отступом этажа двигаем лифт
+    if (finishFloorPoint - elevatorIndent) {
+        setTimeout(changeCoordinates, 100, finishFloorPoint);
+    }
+}
+
+//увеличиваем или уменьшаем отступ лифта
+function changeCoordinates(finishPoint) {
+    //определяю отступ лифта и разницу с отступом этажа
+    let elevatorIndent = findElevatorIndent(elevatorBlock, elevator);
+    let indentToFloor = finishPoint - (elevatorIndent);
+    //если разница положительна, двигаем лифт вверх, при отрицательной вниз,
+    //если 0 не двигаем
+    elevator.style.marginBottom = (indentToFloor > 0) ? (elevatorIndent + 1) + 'px' :
+    (indentToFloor < 0) ? (elevatorIndent - 1) + 'px' :
+    elevator.style.marginBottom;
+    //если разница не 0 повторяем функцию
+    if (indentToFloor) {
+        setTimeout(changeCoordinates, 30, finishPoint);
+    }
+}
+
+//определяем отступ лифта снизу
+function findElevatorIndent(bigElem, smallElem) {
+    let bigElemBottom = bigElem.getBoundingClientRect().top + bigElem.getBoundingClientRect().height;
+    let smallElemBottom = smallElem.getBoundingClientRect().top + smallElem.getBoundingClientRect().height;
+    return bigElemBottom - smallElemBottom;
+}
+
+//получаю координаты для этажа
+function getFloorPointPosition(floor) {
+    return 60 * (floor - 1);
 }
 
 //функция для получения этажа
@@ -182,6 +269,3 @@ function alertMessageNotValidValue(option, min, max) {
     alert(`${phrase} Укажите значение от ${min} до ${max}`);
     return false;
 }
-
-
-let click = () => console.log('click');
