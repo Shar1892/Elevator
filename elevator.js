@@ -60,7 +60,7 @@ function findInputFinishFloorNumber() {
 }
 
 function findStartButton() {
-    return document.querySelectorAll('.startButton');
+    return document.getElementById('startButton');
 }
 
 
@@ -131,6 +131,8 @@ function movingElevator(startFloor, finishFloor) {
     let finishFloorPointPosition = getFloorPointPosition(finishFloor);
     let delay = 0;
 
+    changCorsorFocusOnStartButton(1);
+    console.log(startButton.onclick);
     //через полсекунды лифт двигается
     setTimeout(changeElevatorPosition, 500, startFloorPointPosition);
     //определяю задержку, секунда на 2 стоянки и время на движение
@@ -145,6 +147,18 @@ function movingElevator(startFloor, finishFloor) {
     delay += 500 + findDelay(startFloorPointPosition, finishFloorPointPosition);
     //крашу индикатор в свободно с обновлённой задержкой
     setTimeout(changeIndicator, delay);
+    setTimeout(changCorsorFocusOnStartButton, delay);
+}
+
+//изменяю курсор при фокусе на стартбаттон
+function changCorsorFocusOnStartButton(option) {
+    if (option) {
+        startButton.disabled = true;
+        startButton.style.cursor = "default";
+    } else {
+        startButton.disabled = false;
+        startButton.style.cursor = "pointer";
+    }
 }
 
 //нахожу время, за которое лифт проходит от начальной точки до конечной
