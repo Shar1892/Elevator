@@ -14,7 +14,7 @@ let indicator = findIndicatorElem();
 //переменная в которой храним число этажей
 let numberOfFloors = 0;
 
-//привязываем прослушивание событий на элементы
+//привязываем прослушивание события на инпут ввода этажей
 bindListenerToInputFloors(inputFloors);
 
 
@@ -132,7 +132,6 @@ function movingElevator(startFloor, finishFloor) {
     let delay = 0;
 
     changCorsorFocusOnStartButton(1);
-    console.log(startButton.onclick);
     //через полсекунды лифт двигается
     setTimeout(changeElevatorPosition, 500, startFloorPointPosition);
     //определяю задержку, секунда на 2 стоянки и время на движение
@@ -177,7 +176,7 @@ function changeElevatorPosition(finishFloorPoint) {
     let elevatorIndent = findElevatorIndent(elevatorBlock, elevator);
     //если отступ не совпадает с отступом этажа двигаем лифт
     if (finishFloorPoint - elevatorIndent) {
-        setTimeout(changeCoordinates, 100, finishFloorPoint);
+        setTimeout(changeCoordinates, 30, finishFloorPoint);
     }
 }
 
